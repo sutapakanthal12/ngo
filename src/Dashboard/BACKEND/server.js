@@ -12,7 +12,7 @@ app.use("/api/users",userRoutes);
 const PORT =process.env.PORT || 8000
 
 app.get("/getData",(req,res)=>{
-    res.send("hello");
+    res.send("hiiiiiiiiiiiiiiiii");
 });
 
 app.listen(PORT,()=>console.log("server is running port 8000"));
