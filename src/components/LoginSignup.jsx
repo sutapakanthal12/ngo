@@ -1,19 +1,7 @@
-// import React from 'react'
-// import '../css/LoginSignup.css'
-
-// const LoginSignup = () => {
-//   return (
-//     <div class="LoginSignup">
-//     loginsignup page
-//     </div>
-//   )
-// }
-
-// export default LoginSignup
 
 import React, { useState } from 'react';
 import '../css/LoginSignup.css';
-
+import { Link } from 'react-router-dom';
 const LoginSignup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -80,7 +68,9 @@ const LoginSignup = () => {
         <div className="welcome-box">
           <h2>Welcome, {name}!</h2>
           <p>You are logged in.</p>
-          <button className="btn logout-btn" onClick={handleLogout}>Logout</button>
+          <Link to='/dash'>
+          <button className="btn logout-btn" onClick={handleLogout}>Dashboard</button>
+          </Link>
         </div>
       )}
     </div>

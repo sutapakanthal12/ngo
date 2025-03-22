@@ -1,3 +1,4 @@
+
 const express = require("express");
 const User = require("../models/user");
 const router = express.Router();
@@ -22,23 +23,35 @@ router.get("/",async(req,res)=>{
 });
 
 // update
-router.put("/:id",async(req,res)=>{
+router.put("/:id", async (req, res) => {
     try {
-        const user = new User.findByIdAndUpdate(req.params.id , req.body,{new:true});
-        await user.save();  
-    } catch(error){
-        res.status(400).json({error:error.message});
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json(user);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
+
 // delete
-router.delete("/:id",async(req,res)=>{
+router.delete("/:id", async (req, res) => {
     try {
-        const user = new User.findByIdAndDelete(req.params.id);
-        res.json({message:"user deleted"})  
-    } catch(error){
-        res.status(400).json({error:error.message});
+        const user = await User.findByIdAndDelete(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ message: "User deleted successfully" });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
+
 
 module.exports = router;

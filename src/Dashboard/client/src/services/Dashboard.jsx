@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { FaRegUser, FaUserAlt, FaHandsHelping, FaSeedling, FaUsers, FaHome } from 'react-icons/fa'; // Icons
 import '../css/Dashboard.css';
+import axios from 'axios'
+
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Toggle sidebar visibility
@@ -13,6 +15,16 @@ const Dashboard = () => {
   const [donorsList, setDonorsList] = useState([]); // List of all donors and their donations
   const [adminLoggedIn, setAdminLoggedIn] = useState(false); // Track if admin is logged in
   const [showDonorDetails, setShowDonorDetails] = useState(false); // Toggle donor details table visibility
+  
+  const [editingDonor, setEditingDonor] = useState(null);
+  const [editFoodType, setEditFoodType] = useState('');
+  const [editQuantity, setEditQuantity] = useState(0);
+  const [donorMoneyDonation, setDonorMoneyDonation] = useState(0); // Money donation amount
+  const [editMoneyDonation, setEditMoneyDonation] = useState(0); // For editing money donations
+  const [deletingDonor, setDeletingDonor] = useState(null); // Track donor being deleted
+
+
+  
 
   // Handle Admin Login
   const handleAdminLogin = (e) => {
@@ -26,6 +38,9 @@ const Dashboard = () => {
     e.preventDefault();
     if (donorEmail && donorPassword) {
       setDonorLoggedIn(true); // Donor is logged in
+      console.log("donorEmail: ", donorEmail);
+      console.log("donorPassword: ", donorPassword);
+
       alert('Donor logged in successfully!');
     } else {
       alert('Please provide email and password.');
@@ -38,35 +53,135 @@ const Dashboard = () => {
     setDonorFoodSelection({ ...donorFoodSelection, [name]: value });
   };
 
-  // Handle Donor Food Donation
-  const handleSubmitDonation = (e) => {
-    e.preventDefault();
-    if (!donorFoodSelection.foodType || donorFoodSelection.quantity <= 0) {
-      alert('Please select food type and enter a valid quantity.');
-      return;
-    }
 
-    // Add donor details and donation to the donors list
-    const donor = {
-      name: donorName,
-      email: donorEmail,
-      foodType: donorFoodSelection.foodType,
-      quantity: donorFoodSelection.quantity,
-    };
+const API_URL = 'http://localhost:8000/api/donors';
 
-    setDonorsList([...donorsList, donor]); // Add donor's donation to the list
+const handleSubmitDonation = async (e) => {
+  e.preventDefault();
 
-    // Clear the form fields after submission
-    setDonorFoodSelection({ foodType: '', quantity: 0 });
+  if (donorFoodSelection.quantity <= 0 && donorMoneyDonation <= 0) {
+    alert('Please donate either food or money.');
+    return;
+  }
 
-    // Log out the donor after donation is submitted
-    setDonorLoggedIn(false); // Donor logs out
-    setDonorName('');
-    setDonorEmail('');
-    setDonorPassword('');
-
-    alert(`Thank you ${donorName} for donating ${donorFoodSelection.quantity} kg of ${donorFoodSelection.foodType}`);
+  const donor = {
+    name: donorName,
+    email: donorEmail,
+    foodType: donorFoodSelection.foodType,
+    // quantity: donorFoodSelection.quantity,
+    // moneyDonation: donorMoneyDonation,
+    quantity: parseInt(donorFoodSelection.quantity), // Ensure number type
+    moneyDonation: parseInt(donorMoneyDonation), // Ensure number type
   };
+  console.log("Sending Data: ", donor);
+
+  try {
+    // Send POST request to create donor
+    const response = await axios.post(API_URL, donor, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (response.status === 201) {
+      alert(`Thank you ${donorName} for your donation!`);
+    
+      setDonorFoodSelection({ foodType: '', quantity: 0 });
+      setDonorMoneyDonation(0);
+      setDonorLoggedIn(false);
+      setDonorName('');
+      setDonorEmail('');
+      setDonorPassword('');
+    
+      fetchDonors(); // Call this at the end
+    }
+    
+  } catch (error) {
+    console.error('Error submitting donation:', error.response?.data || error.message);
+    alert('Failed to submit donation. Please try again.');
+  }
+};
+
+
+
+
+// Function to fetch donors list
+const fetchDonors = async () => {
+  try {
+    const response = await axios.get(API_URL);
+    if (response.status === 200) {
+      setDonorsList(response.data);
+    }
+  } catch (error) {
+    console.error('Error fetching donors:', error);
+  }
+};
+
+const handleEditClick = (donor) => {
+  setEditingDonor(donor._id);
+  setEditFoodType(donor.foodType);
+  setEditQuantity(donor.quantity);
+  setEditMoneyDonation(donor.moneyDonation || 0);
+};
+
+const handleSaveEdit = async (id) => {
+  const updatedDonor = {
+    foodType: editFoodType,
+    quantity: Number(editQuantity), // Ensure quantity is a number
+    moneyDonation: Number(editMoneyDonation), // Ensure moneyDonation is a number
+  };
+  console.log("Updating Donor:", updatedDonor); 
+
+  try {
+    const response = await axios.put(`${API_URL}/${id}`, updatedDonor);
+
+    if (response.status === 200) {
+      alert("Donor details updated successfully!");
+
+      // Fetch the latest donor list to reflect changes
+      fetchDonors();
+
+      // Clear editing state
+      setEditingDonor(null);
+    } else {
+      alert("Failed to update donor details. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error updating donor:", error.response?.data || error.message);
+    alert("An error occurred while updating the donor.");
+  }
+};
+
+
+const updateDonor = async (donorId, updatedData) => {
+  try {
+    const response = await axios.put(`http://localhost:8000/api/donors/${donorId}`, updatedData);
+    console.log('Update successful:', response.data);
+  } catch (error) {
+    console.error('Failed to update donation details:', error.response?.data || error.message);
+  }
+};
+
+const handleDeleteDonor = async (id) => {
+  if (window.confirm("Are you sure you want to delete this donor?")) {
+    try {
+      await axios.delete(`http://localhost:8000/api/donors/${id}`);
+      alert("Donor deleted successfully!");
+
+      // Update donor list after deletion
+      setDonorsList((prevDonors) => prevDonors.filter((donor) => donor._id !== id));
+    } catch (error) {
+      console.error("Error deleting donor:", error.response?.data || error.message);
+      alert("Failed to delete donor. Please try again.");
+    }
+  }
+};
+
+
+
+
+// Call fetchDonors() when the component mounts to get the initial list
+useEffect(() => {
+  fetchDonors();
+}, [fetchDonors]);
+
 
   // Render Donor Details Table (for Admin and Donor)
   const renderDonorDetailsTable = () => {
@@ -74,26 +189,84 @@ const Dashboard = () => {
       return <p>No donations yet.</p>;
     }
 
+    
     return (
       <table border="1" style={{ width: '100%', padding: '10px', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
-            <th style={{ padding: '10px' }}>Name</th>
-            <th style={{ padding: '10px' }}>Email</th>
-            <th style={{ padding: '10px' }}>Food Type</th>
-            <th style={{ padding: '10px' }}>Quantity (kg)</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Food Type</th>
+            <th>Quantity (kg)</th>
+            <th>Money (₹)</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {donorsList.map((donor, index) => (
-            <tr key={index}>
-              <td style={{ padding: '10px' }}>{donor.name}</td>
-              <td style={{ padding: '10px' }}>{donor.email}</td>
-              <td style={{ padding: '10px' }}>{donor.foodType}</td>
-              <td style={{ padding: '10px' }}>{donor.quantity}</td>
-            </tr>
-          ))}
-        </tbody>
+  {donorsList.map((donor) => (
+    <tr key={donor._id}>
+      <td>{donor.name}</td>
+      <td>{donor.email}</td>
+      <td>
+        {editingDonor === donor._id ? (
+          <select value={editFoodType} onChange={(e) => setEditFoodType(e.target.value)}>
+            <option value="Fruits">Fruits</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Grains">Grains</option>
+            <option value="Other">Other</option>
+          </select>
+        ) : (
+          donor.foodType
+        )}
+      </td>
+      <td>
+        {editingDonor === donor._id ? (
+          <input
+            type="number"
+            value={editQuantity}
+            onChange={(e) => setEditQuantity(e.target.value)}
+            min="1"
+          />
+        ) : (
+          donor.quantity
+        )}
+      </td>
+      <td>
+        {editingDonor === donor._id ? (
+          <input
+            type="number"
+            value={editMoneyDonation}
+            onChange={(e) => setEditMoneyDonation(Number(e.target.value))} // Ensure it's a number
+            min="0"
+          />
+
+        ) : (
+          donor.moneyDonation || 0
+        )}
+      </td>
+      <td>
+      {editingDonor === donor._id ? (
+                <>
+                  <button onClick={() => handleSaveEdit(donor._id)}>Save</button>
+                  <button onClick={() => setEditingDonor(null)}>Cancel</button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => handleEditClick(donor)}>Edit</button>
+                  <button
+                    onClick={() => handleDeleteDonor(donor._id)}
+                    style={{ marginLeft: '5px', color: 'red' }}
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+
       </table>
     );
   };
@@ -123,28 +296,24 @@ const Dashboard = () => {
         </div>
 
         <ul style={{ padding: 0, listStyleType: 'none' }}>
-          <li
-            onClick={() => setSelectedLogin('admin')}
+          <li onClick={() => setSelectedLogin('admin')}
             style={{
               padding: '20px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               backgroundColor: selectedLogin === 'admin' ? '#34495E' : 'transparent',
-            }}
-          >
-            <FaRegUser style={{ marginRight: '10px' }} /> Admin Login
+          }}>
+          <FaRegUser style={{ marginRight: '10px' }} /> Admin Login
           </li>
-          <li
-            onClick={() => setSelectedLogin('donor')}
+          <li onClick={() => setSelectedLogin('donor')}
             style={{
               padding: '20px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               backgroundColor: selectedLogin === 'donor' ? '#34495E' : 'transparent',
-            }}
-          >
+            }}>
             <FaUserAlt style={{ marginRight: '10px' }} /> Donor Login
           </li>
 
@@ -163,6 +332,7 @@ const Dashboard = () => {
           >
             <FaUsers style={{ marginRight: '10px' }} /> Donor List
           </li>
+          
         </ul>
       </div>
 
@@ -173,46 +343,44 @@ const Dashboard = () => {
         {/* Render login forms based on selected login */}
         {selectedLogin === 'admin' && !adminLoggedIn && (
           <div>
-            <h3>Admin Login</h3>
-            <form onSubmit={handleAdminLogin}>
-              <div style={{ marginBottom: '10px' }}>
-                <label>Username:</label>
-                <input type="text" placeholder="Enter admin username" style={{ width: '100%' }} />
-              </div>
-              <div style={{ marginBottom: '10px' }}>
-                <label>Password:</label>
-                <input type="password" placeholder="Enter admin password" style={{ width: '100%' }} />
-              </div>
-              <button type="submit">Login</button>
-            </form>
+          <h3>Admin Login</h3>
+          <form onSubmit={handleAdminLogin}>
+          <div style={{ marginBottom: '10px' }}>
+          <label>Username:</label>
+          <input type="text" placeholder="Enter admin username" style={{ width: '100%' }} />
+          </div>
+          <div style={{ marginBottom: '10px' }}>
+          <label>Password:</label>
+          <input type="password" placeholder="Enter admin password" style={{ width: '100%' }} />
+          </div>
+          <button type="submit">Login</button>
+          </form>
           </div>
         )}
 
         {selectedLogin === 'donor' && !donorLoggedIn && (
           <div>
-            <h3>Donor Login</h3>
-            <form onSubmit={handleDonorLogin}>
-              <div style={{ marginBottom: '10px' }}>
-                <label>Name:</label>
-                <input
-                  type="text"
-                  placeholder="Enter your name"
-                  style={{ width: '100%' }}
-                  value={donorName}
-                  onChange={(e) => setDonorName(e.target.value)}
-                  required
-                />
+          <h3>Donor Login</h3>
+          <form onSubmit={handleDonorLogin}>
+          <div style={{ marginBottom: '10px' }}>
+          <label>Name:</label>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            style={{ width: '100%' }}
+            value={donorName}
+            onChange={(e) => setDonorName(e.target.value)}
+            required />
               </div>
-              <div style={{ marginBottom: '10px' }}>
-                <label>Email:</label>
-                <input
-                  type="email"
-                  placeholder="Enter donor email"
-                  style={{ width: '100%' }}
-                  value={donorEmail}
-                  onChange={(e) => setDonorEmail(e.target.value)}
-                  required
-                />
+          <div style={{ marginBottom: '10px' }}>
+          <label>Email:</label>
+          <input
+            type="email"
+            placeholder="Enter donor email"
+            style={{ width: '100%' }}
+            value={donorEmail}
+            onChange={(e) => setDonorEmail(e.target.value)}
+            required />
               </div>
               <div style={{ marginBottom: '10px' }}>
                 <label>Password:</label>
@@ -232,8 +400,9 @@ const Dashboard = () => {
 
         {selectedLogin === 'donor' && donorLoggedIn && (
           <div>
-            <h3>Food Donation</h3>
+            <h3>Food & Money Donation</h3>
             <form onSubmit={handleSubmitDonation}>
+              
               <div style={{ marginBottom: '10px' }}>
                 <label>Food Type:</label>
                 <select
@@ -241,8 +410,7 @@ const Dashboard = () => {
                   value={donorFoodSelection.foodType}
                   onChange={handleFoodChange}
                   style={{ width: '100%' }}
-                  required
-                >
+                  required >
                   <option value="">Select Food Type</option>
                   <option value="Fruits">Fruits</option>
                   <option value="Vegetables">Vegetables</option>
@@ -257,10 +425,15 @@ const Dashboard = () => {
                   name="quantity"
                   value={donorFoodSelection.quantity}
                   onChange={handleFoodChange}
-                  min="1"
+                  min="0"
                   style={{ width: '100%' }}
                   required
                 />
+              </div>
+              <div style={{ marginBottom: '10px' }}>
+              <label>Money Donation (₹):</label>
+              <input type="number" value={donorMoneyDonation} onChange={(e) => setDonorMoneyDonation(Number(e.target.value) || 0)
+              } min="0" /> 
               </div>
               <button type="submit">Donate</button>
             </form>
@@ -270,8 +443,8 @@ const Dashboard = () => {
         {/* Donor List */}
         {(adminLoggedIn || showDonorDetails) && (
           <div>
-            <h3>Donor Details</h3>
-            {renderDonorDetailsTable()}
+          <h3>Donor Details</h3>
+          {renderDonorDetailsTable()}
           </div>
         )}
       </div>

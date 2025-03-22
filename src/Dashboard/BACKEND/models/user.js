@@ -6,8 +6,10 @@ const userSchema = mongoose.Schema(
     {
         name:{type:String, require:true},
         email:{type:String, require:true,unique:true},
-        password:{type:String, require:true},
+        password:{type:Number,require:true},
+        moneyDonation:{type:Number,require:true,default:0},
+        
     },
     {timeStamp:true}
 );
-module.exports = mongoose.model("ngoData",userSchema);
+module.exports = mongoose.model("ngoNewData",userSchema);

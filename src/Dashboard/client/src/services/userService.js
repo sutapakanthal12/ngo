@@ -1,9 +1,11 @@
-
-
 const mongoose = require('mongoose');
 
 // MongoDB Atlas connection string
-const mongoURI = 'mongodb+srv://sutapa:r9i4sYbAEMg5qIp1@ngowastefood.dw67s.mongodb.net/?retryWrites=true&w=majority&appName=Ngowastefood';
+const mongoURI = 'mongodb+srv://sutapa:taTnfnvesYsb5sdJ@ngowastefood.dw67s.mongodb.net/?retryWrites=true&w=majority&appName=Ngowastefood';
+const MONGO_URI_NEW ='mongodb+srv://sutapa:taTnfnvesYsb5sdJ@ngowastefood.dw67s.mongodb.net/';
+
+
+// MongoDB Atlas connection string
 
 // Connect to MongoDB Atlas
 const connectDB = async () => {
@@ -40,6 +42,11 @@ const donorSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  moneyDonation: {  
+    type: Number, 
+    required: false,  // ✅ Optional field
+    default: 0        // ✅ Default value
+  }
 });
 
 // Create the Donor model

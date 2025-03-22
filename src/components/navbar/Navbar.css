@@ -6,20 +6,20 @@
 
 nav {
     height: 60px;
-    background-color: #0f1111;
+    background-color: hsl(108, 77%, 40%);
     color: white;
     display: flex;
     align-items: center;  /* Center items vertically */
     justify-content: space-between;  /* Spread out logo and nav items */
 }
 
-.logo {
-    height: 50px;
+/* .logo {
+    height: 1000px;
     width: 100px;
     background-size: cover;
-    object-fit: contain;  /* Ensure the logo fits within the dimensions */
+    object-fit: contain;  /* Ensure the logo fits within the dimensions 
     margin-left: 10px; 
-}
+} */
 
 nav ul {
     display: flex; /* Make the list items align horizontally */
