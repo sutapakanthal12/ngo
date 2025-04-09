@@ -8,6 +8,7 @@ import About from './components/About'
 import Contact from './components/Contact'
 import LoginSignup from './components/LoginSignup'
 import Dashboard from './Dashboard/client/src/services/Dashboard'
+
 const App = () => {
   return <>
     <BrowserRouter>
@@ -20,6 +21,7 @@ const App = () => {
       <Route path='/contact' element={<Contact/>}></Route>
       <Route path='/loginsignup' element={<LoginSignup/>}></Route>
       <Route path='/dash' element={<Dashboard/>}></Route>
+      
       </Routes>
     </BrowserRouter>
   </>

@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../css/Home.css';
-import {Link} from 'react-router-dom';
+
 const Home = () => {
   const navigate = useNavigate();
 
@@ -10,57 +12,57 @@ const Home = () => {
       {/* Header */}
       <header className="header">
         <div className="header-content">
-          <h1 className="logo">FoodSaver NGO</h1>
-          <div className="header-buttons">
-            <Link to="/dash">
-            <button className="donate-button">Donate</button>
+          <h1 className="logo" color='#008080'>🍽 <span className="highlight" style={{ color: '#008080' }}>FoodSaver NGO</span></h1>
+          <nav className="nav-buttons">
+            <Link to="/dash" className="nav-link">
+              <button className="donate-button" >💖 Donate</button>
             </Link>
-            <button className="home-button" onClick={() => navigate('/')}>Go to First Page</button>
-          </div>
+            <button className="home-button" onClick={() => navigate('/')}>🏠 Home</button>
+          </nav>
         </div>
       </header>
 
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h2 className="hero-title">Ending Food Waste. Nourishing Lives.</h2>
+          <h2 className="hero-title">🥗 Ending Food Waste. Nourishing Lives.</h2>
           <p className="hero-description">
-            FoodSaver is a dedicated non-profit organization working to bridge the gap between food waste and hunger. 
-            We partner with local businesses, volunteers, and donors to redirect surplus food to communities in need.
+            <strong>Join us</strong> in our mission to fight food waste and provide meals to those in need.
+            We work with businesses, volunteers, and donors to rescue surplus food and distribute it where it's needed most.
           </p>
-          <Link to="/contact">
-          <button className="join-button">Join Us</button>
+          <Link to="/contact" className="hero-link">
+            <button className="join-button">🤝 Get Involved</button>
           </Link>
         </div>
         <div className="hero-image">
           <img 
             src="https://images.unsplash.com/photo-1556740749-887f6717d7e4" 
-            alt="Food Donation" 
+            alt="Food Donation"
+            className="responsive-image shadow-effect"
           />
         </div>
       </section>
 
-      {/* Info Cards */}
+      {/* Info Section */}
       <section className="info-section">
+        <h2 className="section-title">🚀 How You Can Help</h2>
         <div className="info-cards">
-          <div className="info-card">
-            <h3>Our Mission</h3>
-            <p>We aim to connect surplus food with those who need it most through sustainable solutions.</p>
-          </div>
-          <div className="info-card">
-            <h3>Get Involved</h3>
-            <p>Volunteer, donate, or partner with us. Your support changes lives.</p>
-          </div>
-          <div className="info-card">
-            <h3>Success Stories</h3>
-            <p>Discover how rescued food is making a lasting difference in communities.</p>
-          </div>
+          {[
+            { title: "🌍 Our Mission", text: "We strive to create a sustainable solution to food waste while feeding the hungry." },
+            { title: "🤲 Volunteer With Us", text: "Your time and effort can make a difference. Join our team today!" },
+            { title: "📖 Impact Stories", text: "See how rescued food is changing lives in communities across the country." }
+          ].map((card, index) => (
+            <div key={index} className="info-card stylish-card">
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Footer */}
       <footer className="footer">
-        <p>© 2025 FoodSaver NGO. Building a sustainable future together.</p>
+        <p>© 2025 <span className="footer-highlight" style={{ color: '#ff5733' }}>FoodSaver NGO</span> | Making the world a better place, one meal at a time.</p>
       </footer>
     </div>
   );

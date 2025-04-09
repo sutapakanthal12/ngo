@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import '../css/LoginSignup.css';
 import { Link } from 'react-router-dom';
+
 const LoginSignup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,10 +27,10 @@ const LoginSignup = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container enhanced-background">
       {!isLogged ? (
-        <div className="login-box">
-          <h2>Login</h2>
+        <div className="login-box animated-box shadow-box">
+          <h2 className="login-title gradient-text">Login</h2>
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label>Name</label>
@@ -61,15 +62,15 @@ const LoginSignup = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn">Login</button>
+            <button type="submit" className="btn neon-btn glow-effect">Login</button>
           </form>
         </div>
       ) : (
-        <div className="welcome-box">
-          <h2>Welcome, {name}!</h2>
-          <p>You are logged in.</p>
+        <div className="welcome-box animated-box shadow-box">
+          <h2 className="welcome-title gradient-text">Welcome, {name}!</h2>
+          <p className="welcome-text">You are successfully logged in. Explore your dashboard!</p>
           <Link to='/dash'>
-          <button className="btn logout-btn" onClick={handleLogout}>Dashboard</button>
+            <button className="btn dashboard-btn neon-btn glow-effect" onClick={handleLogout}>Go to Dashboard</button>
           </Link>
         </div>
       )}

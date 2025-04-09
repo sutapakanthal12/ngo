@@ -1,4 +1,4 @@
-/* Login Page Container */
+/* Login Page Container
 .login-container {
     display: flex;
     justify-content: center;
@@ -6,9 +6,9 @@
     height: 100vh;
     background: linear-gradient(135deg, #74ebd5, #acb6e5);
   }
-  
+   */
   /* Login Box */
-  .login-box {
+  /* .login-box {
     background: #fff;
     padding: 25px;
     border-radius: 10px;
@@ -20,10 +20,10 @@
   h2 {
     margin-bottom: 15px;
     color: #333;
-  }
+  } */
   
   /* Form Styles */
-  .login-box .form-group {
+  /* .login-box .form-group {
     margin-bottom: 15px;
     text-align: left;
   }
@@ -46,10 +46,10 @@
   
   .login-box input:focus {
     border-color: #74ebd5;
-  }
+  } */
   
   /* Buttons */
-  .login-box .btn {
+  /* .login-box .btn {
     width: 100%;
     padding: 10px;
     background: #74ebd5;
@@ -64,10 +64,10 @@
   
   .login-box .btn:hover {
     background: #4ebac0;
-  }
+  } */
   
   /* Logout Section */
-  .welcome-box {
+  /* .welcome-box {
     background: #fff;
     padding: 25px;
     border-radius: 10px;
@@ -83,11 +83,106 @@
   
   .welcome-box .logout-btn:hover {
     background: #cc0000;
-  }
+  } */
   
   /* Responsive */
-  @media (max-width: 400px) {
+  /* @media (max-width: 400px) {
     .login-box, .welcome-box {
       width: 90%;
     }
-  }
+  } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* LoginSignup.css */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  font-family: Arial, sans-serif;
+}
+
+.login-box, .welcome-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 350px;
+  text-align: center;
+}
+
+.login-title, .welcome-title {
+  color: #1e3c72;
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  background: #2a5298;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background: #1e3c72;
+}
+
+.welcome-text {
+  margin: 10px 0;
+  color: #333;
+}
+
+.dashboard-btn {
+  background: #28a745;
+}
+
+.dashboard-btn:hover {
+  background: #218838;
+}

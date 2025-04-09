@@ -304,7 +304,7 @@ useEffect(() => {
               alignItems: 'center',
               backgroundColor: selectedLogin === 'admin' ? '#34495E' : 'transparent',
           }}>
-          <FaRegUser style={{ marginRight: '10px' }} /> Admin Login
+          <FaRegUser style={{ marginRight: '10px' , width:'50px' }} /> Admin Login
           </li>
           <li onClick={() => setSelectedLogin('donor')}
             style={{
@@ -314,7 +314,7 @@ useEffect(() => {
               alignItems: 'center',
               backgroundColor: selectedLogin === 'donor' ? '#34495E' : 'transparent',
             }}>
-            <FaUserAlt style={{ marginRight: '10px' }} /> Donor Login
+            <FaUserAlt style={{ marginRight: '10px' , width:'50px'}} /> Donor Login
           </li>
 
           {/* Donor List Section */}
@@ -347,13 +347,13 @@ useEffect(() => {
           <form onSubmit={handleAdminLogin}>
           <div style={{ marginBottom: '10px' }}>
           <label>Username:</label>
-          <input type="text" placeholder="Enter admin username" style={{ width: '100%' }} />
+          <input type="text" placeholder="Enter admin username" style={{ width: '50%' }} />
           </div>
           <div style={{ marginBottom: '10px' }}>
           <label>Password:</label>
-          <input type="password" placeholder="Enter admin password" style={{ width: '100%' }} />
+          <input type="password" placeholder="Enter admin password" style={{ width: '50%' }} />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" style={{ width: '120px' }} >Login</button>
           </form>
           </div>
         )}
@@ -367,7 +367,7 @@ useEffect(() => {
           <input
             type="text"
             placeholder="Enter your name"
-            style={{ width: '100%' }}
+            style={{ width: '50%' }}
             value={donorName}
             onChange={(e) => setDonorName(e.target.value)}
             required />
@@ -377,7 +377,7 @@ useEffect(() => {
           <input
             type="email"
             placeholder="Enter donor email"
-            style={{ width: '100%' }}
+            style={{ width: '50%' }}
             value={donorEmail}
             onChange={(e) => setDonorEmail(e.target.value)}
             required />
@@ -387,13 +387,13 @@ useEffect(() => {
                 <input
                   type="password"
                   placeholder="Enter donor password"
-                  style={{ width: '100%' }}
+                  style={{ width: '50%' }}
                   value={donorPassword}
                   onChange={(e) => setDonorPassword(e.target.value)}
                   required
                 />
               </div>
-              <button type="submit">Login</button>
+              <button type="submit" style={{width:'120px'}}>Login</button>
             </form>
           </div>
         )}
@@ -409,7 +409,7 @@ useEffect(() => {
                   name="foodType"
                   value={donorFoodSelection.foodType}
                   onChange={handleFoodChange}
-                  style={{ width: '100%' }}
+                  style={{ width: '50%' }}
                   required >
                   <option value="">Select Food Type</option>
                   <option value="Fruits">Fruits</option>
@@ -426,16 +426,16 @@ useEffect(() => {
                   value={donorFoodSelection.quantity}
                   onChange={handleFoodChange}
                   min="0"
-                  style={{ width: '100%' }}
+                  style={{ width: '50%' }}
                   required
                 />
               </div>
-              <div style={{ marginBottom: '10px' }}>
+              <div style={{  marginBottom: '10px' , }}> 
               <label>Money Donation (₹):</label>
               <input type="number" value={donorMoneyDonation} onChange={(e) => setDonorMoneyDonation(Number(e.target.value) || 0)
-              } min="0" /> 
+              } min="0"  style={{ width: '50%' }}/> 
               </div>
-              <button type="submit">Donate</button>
+              <button type="submit" style={{ width: '120px' }}>Donate</button>
             </form>
           </div>
         )}
